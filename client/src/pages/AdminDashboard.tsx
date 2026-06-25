@@ -29,7 +29,7 @@ const AdminDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<TrainFormData>();
+  const { register, handleSubmit, reset } = useForm<TrainFormData>();
 
   useEffect(() => {
     // Basic protection: if not admin, kick them out

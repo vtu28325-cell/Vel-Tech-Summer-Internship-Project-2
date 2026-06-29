@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create a centralized Axios instance pointing to our backend
 const api = axios.create({
-  baseURL: 'https://your-render-backend-url.onrender.com/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },

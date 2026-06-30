@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Train from '../models/Train';
+import { trains } from '../data/trains';
 
 // @desc    Get all trains or search trains by source, destination, and date
 // @route   GET /api/trains
@@ -87,27 +88,6 @@ export const createTrain = async (req: Request, res: Response): Promise<void> =>
 // @access  Public
 export const seedTrains = async (req: Request, res: Response): Promise<void> => {
   try {
-    const trains = [
-      {
-        trainNumber: '12951', trainName: 'Mumbai - New Delhi Rajdhani Express',
-        source: 'Mumbai', destination: 'Delhi',
-        schedule: { departureTime: '17:00', arrivalTime: '08:32', date: '2026-07-01' },
-        totalSeats: 50, fare: 2500, duration: '15h 32m', trainType: 'Rajdhani'
-      },
-      {
-        trainNumber: '12627', trainName: 'Karnataka Express',
-        source: 'Delhi', destination: 'Bangalore',
-        schedule: { departureTime: '20:20', arrivalTime: '06:40', date: '2026-07-03' },
-        totalSeats: 120, fare: 1950, duration: '34h 20m', trainType: 'Express'
-      },
-      {
-        trainNumber: '12622', trainName: 'Tamil Nadu Express',
-        source: 'Delhi', destination: 'Chennai',
-        schedule: { departureTime: '22:30', arrivalTime: '07:00', date: '2026-07-03' },
-        totalSeats: 110, fare: 2100, duration: '32h 30m', trainType: 'Superfast'
-      }
-    ];
-
     await Train.deleteMany({});
     for (const train of trains) {
       await Train.create(train as any);

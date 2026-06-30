@@ -15,6 +15,7 @@ const SearchPage: React.FC = () => {
   const [trains, setTrains] = useState<ITrain[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasSearched, setHasSearched] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Fetch all trains on initial load
   useEffect(() => {
@@ -31,9 +32,13 @@ const SearchPage: React.FC = () => {
 
       const data = await getTrains(cleanParams);
       setTrains(data);
+      setErrorMessage(null);
       if (params) setHasSearched(true);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to fetch trains');
+      console.error("API Error:", error);
+      const errMsg = error?.response?.data?.message || error.message || 'Failed to fetch trains';
+      setErrorMessage(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsLoading(false);
     }
@@ -98,11 +103,28 @@ const SearchPage: React.FC = () => {
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
+        ) : errorMessage ? (
+          <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-8 max-w-2xl mx-auto text-center">
+            <div className="text-4xl mb-4">🔌</div>
+            <h3 className="text-xl font-bold text-red-400 mb-2">Connection Error</h3>
+            <p className="text-slate-300 mb-4">{errorMessage}</p>
+            <div className="text-left bg-slate-900 p-4 rounded-xl text-sm text-slate-400 space-y-2">
+              <p className="font-bold text-slate-300">If you are testing on Vercel, please check:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Did you set <code className="bg-slate-800 px-1 rounded text-blue-400">VITE_API_URL</code> in Vercel Settings to your Render backend URL?</li>
+                <li>Is your Render backend successfully deployed and running?</li>
+                <li>Did you set <code className="bg-slate-800 px-1 rounded text-blue-400">MONGODB_URI</code> in Render Settings?</li>
+              </ul>
+            </div>
+            <button onClick={() => fetchTrains()} className="mt-6 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition">
+              Retry Connection
+            </button>
+          </div>
         ) : trains.length === 0 ? (
           <div className="text-center py-20 bg-slate-800 rounded-2xl border border-slate-700">
             <div className="text-4xl mb-4">🤷‍♂️</div>
             <h3 className="text-xl font-semibold text-white mb-2">No trains found</h3>
-            <p className="text-slate-400">Try adjusting your search filters.</p>
+            <p className="text-slate-400">Try adjusting your search filters. If you just deployed, make sure to visit <code className="text-blue-400 bg-slate-900 px-2 py-1 rounded">/api/trains/seed</code> on your backend URL to populate the database.</p>
           </div>
         ) : (
           <div className="space-y-4">

@@ -1,8 +1,13 @@
 import { Router } from 'express';
-import { getTrains, getTrainById, createTrain } from '../controllers/trainController';
+import { getTrains, getTrainById, createTrain, seedTrains } from '../controllers/trainController';
 import protect, { admin } from '../middleware/protect';
 
 const router = Router();
+
+// @route   GET /api/trains/seed
+// @desc    Seed database for production
+// @access  Public
+router.get('/seed', seedTrains);
 
 // @route   GET /api/trains
 // @desc    Get all trains or search
